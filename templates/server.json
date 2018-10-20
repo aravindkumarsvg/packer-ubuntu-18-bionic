@@ -1,0 +1,80 @@
+{
+    "description": "Packer template for building vagrant box of ubuntu bionic 18.04 LTS Server",
+    "variables": {
+        "iso_url": "",
+        "iso_checksum": "",
+        "iso_checksum_type": "md5",
+        "keep_registered": "false",
+        "iso_target_path": "iso/",
+        "headless": "false",
+        "vm_description": "Ubuntu AMD64 Bionic 18.04 LTS Server",
+        "vm_version": "1.0.0"
+    },
+    "builders": [{
+        "type": "virtualbox-iso",
+        "guest_os_type": "Ubuntu_64",
+
+        "output_directory": "output",
+        "export_opts": [
+            "--manifest",
+            "--vsys", "0",
+            "--description", "{{user `vm_description`}}",
+            "--version", "{{user `vm_version`}}"
+        ],
+        "http_directory": "http",
+
+        "iso_urls": [
+            "{{ user `iso_url` }}",
+            "http://cdimage.ubuntu.com/ubuntu/releases/bionic/release/ubuntu-18.04.1-server-amd64.iso"
+        ],
+        "iso_checksum": "{{ user `iso_checksum` }}",
+        "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+        "iso_target_path": "{{ user `iso_target_path` }}",
+
+        "ssh_username": "vagrant",
+        "ssh_password": "vagrant",
+        "ssh_port": 22,
+        "ssh_wait_timeout": "10000s",
+
+        "disk_size": "40000",
+        "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+        "virtualbox_version_file": ".vbox_version",
+        "vboxmanage": [
+            ["modifyvm", "{{.Name}}", "--memory", "1024"],
+            ["modifyvm", "{{.Name}}", "--cpus", "1"]
+        ],
+        "vm_name": "ubuntu_bionic_18_04_lts_server_packer_amd64_{{ uuid }}",
+        "keep_registered": "{{user `keep_registered`}}",
+        "headless": "{{user `headless`}}",
+
+        "boot_wait": "8s",
+        "boot_command": [
+            "<esc><esc><esc><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+            " auto=true priority=critical ",
+            " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/server.cfg ",
+            " vga=788 ",
+            " initrd=/install/initrd.gz ",
+            " --- <wait>",
+            "<enter><wait>"
+        ],
+
+        "shutdown_command": "echo 'packer' | sudo -S shutdown -P now"
+    }],
+    "provisioners": [{
+            "type": "shell",
+            "script": "scripts/setup.sh",
+            "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
+        },
+        {
+            "type": "shell",
+            "script": "scripts/cleanup.sh",
+            "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
+        }
+    ],
+    "post-processors": [{
+        "type": "vagrant",
+        "compression_level": 9,
+        "keep_input_artifact": true,
+        "output": "output/server.box"
+    }]
+}

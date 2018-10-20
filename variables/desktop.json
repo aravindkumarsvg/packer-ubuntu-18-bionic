@@ -1,0 +1,6 @@
+{
+    "iso_url": "iso/ubuntu-18.04-desktop-amd64.iso",
+    "iso_checksum": "a55353d837cbf7bc006cf49eeff05ae5044e757498e30643a9199b9a25bc9a34",
+    "iso_checksum_type": "sha256",
+    "keep_registered": "true"
+}
