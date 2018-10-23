@@ -3,7 +3,7 @@
     "iso_checksum": "5748706937539418ee5707bd538c4f5eabae485d17aa49fb13ce2c9b70532433",
     "iso_checksum_type": "sha256",
     "keep_registered": "true",
-    "vagrant_cloud_access_token": "43nMmFW5sUc9lg.atlasv1.qAUREvSK9W1zoueqwvtaDivXCQgjkrcN8JCD1Az7x1QBnFI497s7yDumkjrbVEehZxM",
+    "vagrant_cloud_access_token": "",
     "vagrant_box_version": "1.0.0",
     "vagrant_cloud_box_description": "OS=Ubuntu 18.04.1 bionic beaver, architecture=amd64, provider=virtualbox, type=desktop, repo=https://github.com/aravindkumarsvg/packer-ubuntu-18-bionic.git"
 }
