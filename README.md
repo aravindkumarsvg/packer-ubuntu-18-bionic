@@ -11,7 +11,9 @@ make build_desktop
 make build_server
 ```
 
-# Vagrant Cloud
+# Vagrant Cloud Boxes
+  - server - aravindkumarsvgj/ubuntu_18_bionic_amd64_server
+  - desktop - aravindkumarsvgj/ubuntu_18_bionic_amd64_desktop
 
 # Details
   - Virtualbox version - 5.1

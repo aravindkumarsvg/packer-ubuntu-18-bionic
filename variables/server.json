@@ -2,5 +2,8 @@
     "iso_url": "iso/ubuntu-18.04.1-server-amd64.iso",
     "iso_checksum": "a5b0ea5918f850124f3d72ef4b85bda82f0fcd02ec721be19c1a6952791c8ee8",
     "iso_checksum_type": "sha256",
-    "keep_registered": "true"
+    "keep_registered": "true",
+    "vagrant_cloud_access_token": "43nMmFW5sUc9lg.atlasv1.qAUREvSK9W1zoueqwvtaDivXCQgjkrcN8JCD1Az7x1QBnFI497s7yDumkjrbVEehZxM",
+    "vagrant_box_version": "1.0.0",
+    "vagrant_cloud_box_description": "OS=Ubuntu 18.04.1 bionic beaver, architecture=amd64, provider=virtualbox, type=server, repo=https://github.com/aravindkumarsvg/packer-ubuntu-18-bionic.git"
 }

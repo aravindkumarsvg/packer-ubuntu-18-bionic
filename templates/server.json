@@ -1,14 +1,17 @@
 {
-    "description": "Packer template for building vagrant box of ubuntu bionic 18.04 LTS Server",
+    "description": "Packer template for building vagrant box of ubuntu bionic 18 Server",
     "variables": {
         "iso_url": "",
         "iso_checksum": "",
         "iso_checksum_type": "md5",
         "keep_registered": "false",
-        "iso_target_path": "iso/",
+        "iso_target_path": "iso-packer/",
         "headless": "false",
-        "vm_description": "Ubuntu AMD64 Bionic 18.04 LTS Server",
-        "vm_version": "1.0.0"
+        "vm_description": "Ubuntu AMD64 Bionic 18 Server",
+        "vm_version": "1.0.0",
+        "vagrant_box_version": "",
+        "vagrant_cloud_access_token": "",
+        "vagrant_cloud_box_description": ""
     },
     "builders": [{
         "type": "virtualbox-iso",
@@ -71,10 +74,19 @@
             "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
         }
     ],
-    "post-processors": [{
-        "type": "vagrant",
-        "compression_level": 9,
-        "keep_input_artifact": true,
-        "output": "output/server.box"
-    }]
+    "post-processors": [
+        [{
+            "type": "vagrant",
+            "compression_level": 9,
+            "keep_input_artifact": true,
+            "output": "output/server.box"
+        }, {
+            "type": "vagrant-cloud",
+            "box_tag": "aravindkumarsvgj/ubuntu_18_bionic_amd64_server",
+            "no_release": false,
+            "version": "{{ user `vagrant_box_version` }}",
+            "access_token": "{{ user `vagrant_cloud_access_token` }}",
+            "version_description": "{{ user `vagrant_cloud_box_description` }}"
+        }]
+    ]
 }

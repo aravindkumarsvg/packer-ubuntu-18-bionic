@@ -1,15 +1,17 @@
 {
-    "description": "Packer template for building vagrant box of ubuntu bionic 18.04 LTS desktop",
+    "description": "Packer template for building vagrant box of ubuntu bionic 18 desktop",
     "variables": {
         "iso_url": "",
         "iso_checksum": "",
         "iso_checksum_type": "md5",
-        "guest_additions_path": "",
         "keep_registered": "false",
-        "iso_target_path": "iso/",
+        "iso_target_path": "iso-packer/",
         "headless": "false",
-        "vm_description": "Ubuntu AMD64 Bionic 18.04 LTS Desktop",
-        "vm_version": "1.0.0"
+        "vm_description": "Ubuntu AMD64 Bionic 18 Desktop",
+        "vm_version": "1.0.0",
+        "vagrant_box_version": "",
+        "vagrant_cloud_access_token": "",
+        "vagrant_cloud_box_description": ""
     },
     "builders": [{
         "type": "virtualbox-iso",
@@ -26,7 +28,7 @@
 
         "iso_urls": [
             "{{ user `iso_url` }}",
-            "http://releases.ubuntu.com/18.04/ubuntu-18.04.1-desktop-amd64.iso"
+            "http://releases.ubuntu.com/bionic/ubuntu-18.04.1-desktop-amd64.iso"
         ],
         "iso_checksum": "{{ user `iso_checksum` }}",
         "iso_checksum_type": "{{ user `iso_checksum_type` }}",
@@ -35,9 +37,11 @@
         "ssh_username": "vagrant",
         "ssh_password": "vagrant",
         "ssh_port": 22,
+        "ssh_wait_timeout": "10000s",
 
         "disk_size": "40000",
-        "guest_additions_path": "{{ user `guest_additions_path` }}",
+        "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+        "virtualbox_version_file": ".vbox_version",
         "vboxmanage": [
             ["modifyvm", "{{.Name}}", "--memory", "1024"],
             ["modifyvm", "{{.Name}}", "--cpus", "1"]
@@ -48,19 +52,50 @@
 
         "boot_wait": "6s",
         "boot_command": [
-            "<enter><esc><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-            " auto=true priority=critical ",
+            "<esc><esc><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+            " auto=true priority=critical noprompt ",
+            " automatic-ubiquity ",
             " url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/desktop.cfg ",
+            " keyboard-configuration/layoutcode=us ",
+            " ubiquity/reboot=true ",
+            " languagechooser/language-name=English ",
+            " countrychooser/shortlist=IN ",
+            " localechooser/supported-locales=en_US.UTF-8 ",
+            " debian-installer/locale=en_US ",
+            " netcfg/choose_interface=auto ",
             " boot=casper ",
             " initrd=/casper/initrd.lz ",
-            "quiet splash noprompt noshell --- <wait>",
+            " quiet splash noprompt noshell ",
+            " --- <wait>",
             "<enter><wait>"
         ],
 
         "shutdown_command": "echo 'packer' | sudo -S shutdown -P now"
     }],
-    "provisioners": [
-
+    "provisioners": [{
+            "type": "shell",
+            "script": "scripts/setup.sh",
+            "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
+        },
+        {
+            "type": "shell",
+            "script": "scripts/cleanup.sh",
+            "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
+        }
     ],
-    "post-processors": []
+    "post-processors": [
+        [{
+            "type": "vagrant",
+            "compression_level": 9,
+            "keep_input_artifact": true,
+            "output": "output/desktop.box"
+        }, {
+            "type": "vagrant-cloud",
+            "box_tag": "aravindkumarsvgj/ubuntu_18_bionic_amd64_desktop",
+            "no_release": false,
+            "version": "{{ user `vagrant_box_version` }}",
+            "access_token": "{{ user `vagrant_cloud_access_token` }}",
+            "version_description": "{{ user `vagrant_cloud_box_description` }}"
+        }]
+    ]
 }

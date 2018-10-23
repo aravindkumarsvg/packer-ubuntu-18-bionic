@@ -2,3 +2,4 @@ packer_cache/
 output*
 **/.vagrant
 iso/
+iso-packer/
