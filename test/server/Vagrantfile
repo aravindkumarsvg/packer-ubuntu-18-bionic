@@ -1,0 +1,15 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box = "ubuntu-bionic-18-04-server"
+  config.vm.box_check_update = false
+  config.ssh.insert_key = false
+  config.ssh.username = "vagrant"
+  config.ssh.password = "vagrant"
+  config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo apt-get update
+    sudo apt-get install -y apache2
+  SHELL
+end

@@ -1,0 +1,9 @@
+{
+    "iso_url": "iso/ubuntu-18.04.1-desktop-amd64.iso",
+    "iso_checksum": "5748706937539418ee5707bd538c4f5eabae485d17aa49fb13ce2c9b70532433",
+    "iso_checksum_type": "sha256",
+    "keep_registered": "true",
+    "vagrant_cloud_access_token": "",
+    "vagrant_box_version": "1.0.0",
+    "vagrant_cloud_box_description": "OS=Ubuntu 18.04.1 bionic beaver, architecture=amd64, provider=virtualbox, type=desktop, repo=https://github.com/aravindkumarsvg/packer-ubuntu-18-bionic.git"
+}
