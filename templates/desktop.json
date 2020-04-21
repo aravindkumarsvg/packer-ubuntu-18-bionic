@@ -28,7 +28,7 @@
 
         "iso_urls": [
             "{{ user `iso_url` }}",
-            "http://releases.ubuntu.com/bionic/ubuntu-18.04.1-desktop-amd64.iso"
+            "http://releases.ubuntu.com/bionic/ubuntu-18.04.4-desktop-amd64.iso"
         ],
         "iso_checksum": "{{ user `iso_checksum` }}",
         "iso_checksum_type": "{{ user `iso_checksum_type` }}",
@@ -64,7 +64,7 @@
             " debian-installer/locale=en_US ",
             " netcfg/choose_interface=auto ",
             " boot=casper ",
-            " initrd=/casper/initrd.lz ",
+            " initrd=/casper/initrd ",
             " quiet splash noprompt noshell ",
             " --- <wait>",
             "<enter><wait>"
